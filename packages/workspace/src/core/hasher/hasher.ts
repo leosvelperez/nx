@@ -1,17 +1,10 @@
-import { workspaceFileName } from '../file-utils';
+import { NxJsonConfiguration, ProjectGraph, Task } from '@nrwl/devkit';
 import { exec } from 'child_process';
+import { performance } from 'perf_hooks';
 import { defaultFileHasher, FileHasher } from './file-hasher';
 import { defaultHashing, HashingImpl } from './hashing-impl';
-import * as minimatch from 'minimatch';
-import { performance } from 'perf_hooks';
-import { parseJson, readJsonFile } from '@nrwl/devkit';
-import {
-  NxJsonConfiguration,
-  ProjectGraph,
-  Task,
-  WorkspaceJsonConfiguration,
-} from '@nrwl/devkit';
-import { resolveNewFormatWithInlineProjects } from '@nrwl/tao/src/shared/workspace';
+import { ImplicitDepsHasher, ImplicitHashResult } from './implicit-deps-hasher';
+import { ProjectHasher, ProjectHashResult } from './project-hasher';
 
 export interface Hash {
   value: string;
@@ -23,35 +16,17 @@ export interface Hash {
   };
 }
 
-interface ProjectHashResult {
-  value: string;
-  nodes: { [name: string]: string };
-}
-
-interface ImplicitHashResult {
-  value: string;
-  files: { [fileName: string]: string };
-}
-
 interface RuntimeHashResult {
   value: string;
   runtime: { [input: string]: string };
 }
 
-interface CompilerOptions {
-  paths: Record<string, string[]>;
-}
-
-interface TsconfigJsonConfiguration {
-  compilerOptions: CompilerOptions;
-}
-
 export class Hasher {
   static version = '2.0';
-  private implicitDependencies: Promise<ImplicitHashResult>;
   private runtimeInputs: Promise<RuntimeHashResult>;
   private fileHasher: FileHasher;
-  private projectHashes: ProjectHasher;
+  private implicitDepsHasher: ImplicitDepsHasher;
+  private projectHasher: ProjectHasher;
   private hashing: HashingImpl;
 
   constructor(
@@ -69,26 +44,29 @@ export class Hasher {
       this.fileHasher = new FileHasher(hashing);
       this.fileHasher.clear();
     }
-    this.projectHashes = new ProjectHasher(this.projectGraph, this.hashing, {
-      selectivelyHashTsConfig: this.options.selectivelyHashTsConfig ?? false,
-    });
+    this.implicitDepsHasher = new ImplicitDepsHasher(
+      this.projectGraph,
+      this.nxJson,
+      this.hashing,
+      this.fileHasher
+    );
+    this.projectHasher = new ProjectHasher(
+      this.projectGraph,
+      this.hashing,
+      this.implicitDepsHasher,
+      { selectivelyHashTsConfig: this.options.selectivelyHashTsConfig ?? false }
+    );
   }
 
   async hashTaskWithDepsAndContext(task: Task): Promise<Hash> {
     const command = this.hashCommand(task);
 
     const values = (await Promise.all([
-      this.projectHashes.hashProject(task.target.project, [
+      this.projectHasher.hashProject(task.target.project, [
         task.target.project,
       ]),
-      this.implicitDepsHash(),
       this.runtimeInputsHash(),
-    ])) as [
-      ProjectHashResult,
-      ImplicitHashResult,
-      RuntimeHashResult
-      // NodeModulesResult
-    ];
+    ])) as [ProjectHashResult, RuntimeHashResult];
 
     const value = this.hashing.hashArray([
       Hasher.version,
@@ -101,8 +79,8 @@ export class Hasher {
       details: {
         command,
         nodes: values[0].nodes,
-        implicitDeps: values[1].files,
-        runtime: values[2].runtime,
+        implicitDeps: values[0].implicitDeps,
+        runtime: values[1].runtime,
       },
     };
   }
@@ -116,12 +94,12 @@ export class Hasher {
     ]);
   }
 
-  async hashContext(): Promise<{
+  async hashContext(task: Task): Promise<{
     implicitDeps: ImplicitHashResult;
     runtime: RuntimeHashResult;
   }> {
     const values = (await Promise.all([
-      this.implicitDepsHash(),
+      this.implicitDepsHasher.hashImplicitDeps(task.target.project),
       this.runtimeInputsHash(),
     ])) as [ImplicitHashResult, RuntimeHashResult];
 
@@ -132,7 +110,7 @@ export class Hasher {
   }
 
   async hashSource(task: Task): Promise<string> {
-    return this.projectHashes.hashProjectNodeSource(task.target.project);
+    return this.projectHasher.hashProjectNodeSource(task.target.project);
   }
 
   hashArray(values: string[]): string {
@@ -192,218 +170,5 @@ export class Hasher {
     });
 
     return this.runtimeInputs;
-  }
-
-  private async implicitDepsHash(): Promise<ImplicitHashResult> {
-    if (this.implicitDependencies) return this.implicitDependencies;
-
-    performance.mark('hasher:implicit deps hash:start');
-
-    this.implicitDependencies = new Promise((res) => {
-      const implicitDeps = Object.keys(this.nxJson.implicitDependencies ?? {});
-      const filesWithoutPatterns = implicitDeps.filter(
-        (p) => p.indexOf('*') === -1
-      );
-      const patterns = implicitDeps.filter((p) => p.indexOf('*') !== -1);
-
-      const implicitDepsFromPatterns =
-        patterns.length > 0
-          ? (this.projectGraph.allWorkspaceFiles ?? [])
-              .filter(
-                (f) => !!patterns.find((pattern) => minimatch(f.file, pattern))
-              )
-              .map((f) => f.file)
-          : [];
-
-      const fileNames = [
-        ...filesWithoutPatterns,
-        ...implicitDepsFromPatterns,
-
-        //TODO: vsavkin move the special cases into explicit ts support
-        'package-lock.json',
-        'yarn.lock',
-        'pnpm-lock.yaml',
-
-        // ignore files will change the set of inputs to the hasher
-        '.gitignore',
-        '.nxignore',
-      ];
-
-      const fileHashes = [
-        ...fileNames.map((file) => {
-          const hash = this.fileHasher.hashFile(file);
-          return { file, hash };
-        }),
-        ...this.hashGlobalConfig(),
-      ];
-
-      const combinedHash = this.hashing.hashArray(
-        fileHashes.map((v) => v.hash)
-      );
-
-      performance.mark('hasher:implicit deps hash:end');
-      performance.measure(
-        'hasher:implicit deps hash',
-        'hasher:implicit deps hash:start',
-        'hasher:implicit deps hash:end'
-      );
-
-      res({
-        value: combinedHash,
-        files: fileHashes.reduce((m, c) => ((m[c.file] = c.hash), m), {}),
-      });
-    });
-
-    return this.implicitDependencies;
-  }
-
-  private hashGlobalConfig() {
-    return [
-      {
-        hash: this.fileHasher.hashFile('nx.json', (file) => {
-          try {
-            const r = parseJson(file);
-            delete r.projects;
-            return JSON.stringify(r);
-          } catch {
-            return '';
-          }
-        }),
-        file: 'nx.json',
-      },
-    ];
-  }
-}
-
-class ProjectHasher {
-  private sourceHashes: { [projectName: string]: Promise<string> } = {};
-  private workspaceJson: WorkspaceJsonConfiguration;
-  private nxJson: NxJsonConfiguration;
-  private tsConfigJson: TsconfigJsonConfiguration;
-
-  constructor(
-    private readonly projectGraph: ProjectGraph,
-    private readonly hashing: HashingImpl,
-    private readonly options: { selectivelyHashTsConfig: boolean }
-  ) {
-    this.workspaceJson = this.readWorkspaceConfigFile(workspaceFileName());
-    this.nxJson = this.readNxJsonConfigFile('nx.json');
-    this.tsConfigJson = this.readTsConfig();
-  }
-
-  async hashProject(
-    projectName: string,
-    visited: string[]
-  ): Promise<ProjectHashResult> {
-    return Promise.resolve().then(async () => {
-      const deps = this.projectGraph.dependencies[projectName] ?? [];
-      const depHashes = (
-        await Promise.all(
-          deps.map(async (d) => {
-            if (visited.indexOf(d.target) > -1) {
-              return null;
-            } else {
-              visited.push(d.target);
-              return await this.hashProject(d.target, visited);
-            }
-          })
-        )
-      ).filter((r) => !!r);
-      const projectHash = await this.hashProjectNodeSource(projectName);
-      const nodes = depHashes.reduce(
-        (m, c) => {
-          return { ...m, ...c.nodes };
-        },
-        { [projectName]: projectHash }
-      );
-      const value = this.hashing.hashArray([
-        ...depHashes.map((d) => d.value),
-        projectHash,
-      ]);
-      return { value, nodes };
-    });
-  }
-
-  async hashProjectNodeSource(projectName: string) {
-    if (!this.sourceHashes[projectName]) {
-      this.sourceHashes[projectName] = new Promise(async (res) => {
-        const p = this.projectGraph.nodes[projectName];
-        const fileNames = p.data.files.map((f) => f.file);
-        const values = p.data.files.map((f) => f.hash);
-
-        const workspaceJson = JSON.stringify(
-          this.workspaceJson.projects[projectName] ?? ''
-        );
-        const nxJson = JSON.stringify(this.nxJson.projects[projectName] ?? '');
-
-        let tsConfig: string;
-
-        if (this.options.selectivelyHashTsConfig) {
-          tsConfig = this.removeOtherProjectsPathRecords(projectName);
-        } else {
-          tsConfig = JSON.stringify(this.tsConfigJson);
-        }
-
-        res(
-          this.hashing.hashArray([
-            ...fileNames,
-            ...values,
-            workspaceJson,
-            nxJson,
-            tsConfig,
-          ])
-        );
-      });
-    }
-    return this.sourceHashes[projectName];
-  }
-
-  private removeOtherProjectsPathRecords(projectName: string) {
-    const { paths, ...compilerOptions } = this.tsConfigJson.compilerOptions;
-
-    const rootPath = this.workspaceJson.projects[projectName].root.split('/');
-    rootPath.shift();
-    const pathAlias = `@${this.nxJson.npmScope}/${rootPath.join('/')}`;
-
-    return JSON.stringify({
-      compilerOptions: {
-        ...compilerOptions,
-        paths: {
-          [pathAlias]: paths[pathAlias] ?? [],
-        },
-      },
-    });
-  }
-
-  private readTsConfig() {
-    try {
-      const res = readJsonFile('tsconfig.base.json');
-      res.compilerOptions.paths ??= {};
-      return res;
-    } catch {
-      return {
-        compilerOptions: { paths: {} },
-      };
-    }
-  }
-
-  private readWorkspaceConfigFile(path: string): WorkspaceJsonConfiguration {
-    try {
-      const res = readJsonFile(path);
-      res.projects ??= {};
-      return resolveNewFormatWithInlineProjects(res);
-    } catch {
-      return { projects: {}, version: 2 };
-    }
-  }
-
-  private readNxJsonConfigFile(path: string): NxJsonConfiguration {
-    try {
-      const res = readJsonFile(path);
-      res.projects ??= {};
-      return res;
-    } catch {
-      return { projects: {}, npmScope: '' };
-    }
   }
 }
