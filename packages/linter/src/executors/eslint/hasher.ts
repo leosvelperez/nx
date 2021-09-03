@@ -19,7 +19,7 @@ export default async function run(
   const tags = hasher.hashArray(
     deps.map((d) => (nxJson.projects[d].tags || []).join('|'))
   );
-  const context = await hasher.hashContext();
+  const context = await hasher.hashContext(task);
   return {
     value: hasher.hashArray([
       command,

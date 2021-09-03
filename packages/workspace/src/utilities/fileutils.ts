@@ -8,13 +8,9 @@ import {
   renameSync as fsRenameSync,
 } from 'fs';
 import { ensureDirSync } from 'fs-extra';
-import { basename, dirname, resolve } from 'path';
-import {
-  parseJson,
-  serializeJson,
-  readJsonFile,
-  writeJsonFile,
-} from '@nrwl/devkit';
+import { basename, dirname, join, resolve } from 'path';
+import { serializeJson, readJsonFile, writeJsonFile } from '@nrwl/devkit';
+import { appRootPath } from '@nrwl/tao/src/utils/app-root';
 
 export { readJsonFile, writeJsonFile, serializeJson };
 
@@ -101,4 +97,8 @@ export function isRelativePath(path: string): boolean {
     path.startsWith('./') ||
     path.startsWith('../')
   );
+}
+
+export function resolvePathFromRoot(path: string): string {
+  return join(appRootPath, path);
 }
