@@ -31,33 +31,9 @@ export async function angularInitGenerator(
   setDefaults(host, options);
   const tasks: GeneratorCallback[] = [];
 
-  const peerDepsToInstall = [
-    '@angular-devkit/core',
-    '@angular-devkit/schematics',
-    '@schematics/angular',
-  ];
-  let devkitVersion: string;
-  peerDepsToInstall.forEach((pkg) => {
-    const packageVersion = getInstalledPackageVersion(host, pkg);
-
-    if (!packageVersion) {
-      devkitVersion ??=
-        getInstalledPackageVersion(host, '@angular-devkit/build-angular') ??
-        backwardCompatibleVersions.angularV14.angularDevkitVersion;
-
-      try {
-        ensurePackage(pkg, devkitVersion);
-      } catch {
-        // @schematics/angular cannot be required so this fails but this will still allow wrapping the schematic later on
-      }
-
-      if (!options.skipPackageJson) {
-        tasks.push(
-          addDependenciesToPackageJson(host, {}, { [pkg]: devkitVersion })
-        );
-      }
-    }
-  });
+  if (process.env.NX_JEST_TESTS_RUN !== 'true') {
+    installPeerDeps(host, options, tasks);
+  }
 
   const jsTask = await jsInitGenerator(host, {
     ...options,
@@ -96,6 +72,40 @@ function normalizeOptions(options: Schema): Required<Schema> {
     unitTestRunner: options.unitTestRunner ?? UnitTestRunner.Jest,
     rootProject: options.rootProject,
   };
+}
+
+function installPeerDeps(
+  tree: Tree,
+  options: Schema,
+  tasks: GeneratorCallback[]
+): void {
+  const peerDepsToInstall = [
+    '@angular-devkit/core',
+    '@angular-devkit/schematics',
+    '@schematics/angular',
+  ];
+  let devkitVersion: string;
+  peerDepsToInstall.forEach((pkg) => {
+    const packageVersion = getInstalledPackageVersion(tree, pkg);
+
+    if (!packageVersion) {
+      devkitVersion ??=
+        getInstalledPackageVersion(tree, '@angular-devkit/build-angular') ??
+        backwardCompatibleVersions.angularV14.angularDevkitVersion;
+
+      try {
+        ensurePackage(pkg, devkitVersion);
+      } catch {
+        // @schematics/angular cannot be required so this fails but this will still allow wrapping the schematic later on
+      }
+
+      if (!options.skipPackageJson) {
+        tasks.push(
+          addDependenciesToPackageJson(tree, {}, { [pkg]: devkitVersion })
+        );
+      }
+    }
+  });
 }
 
 function setDefaults(host: Tree, options: Schema) {
