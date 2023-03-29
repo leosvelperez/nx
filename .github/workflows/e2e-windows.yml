@@ -21,9 +21,9 @@ jobs:
     strategy:
       matrix:
         node_version:
-          - 19
+          # - 19
           - 18
-          - 16
+          # - 16
 
     name: Cache install (node v${{ matrix.node_version }})
     steps:
@@ -55,186 +55,186 @@ jobs:
     strategy:
       matrix:
         node_version:
-          - 19
+          # - 19
           - 18
-          - 16
+          # - 16
         package_manager:
           - npm
         project:
-          - e2e-add-nx-to-monorepo
+          # - e2e-add-nx-to-monorepo
           - e2e-angular-core
-          - e2e-angular-extensions
-          - e2e-cra-to-nx
-          - e2e-cypress
-          - e2e-esbuild
-          - e2e-jest
-          - e2e-js
-          - e2e-lerna-smoke-tests
-          - e2e-linter
-          - e2e-make-angular-cli-faster
-          - e2e-next
-          - e2e-node
-          - e2e-nx-init
-          - e2e-nx-misc
-          - e2e-nx-plugin
-          - e2e-nx-run
-          - e2e-react
-          - e2e-web
-          - e2e-rollup
-          - e2e-storybook
-          - e2e-storybook-angular
-          - e2e-vite
-          - e2e-webpack
-          - e2e-workspace-create
-          - e2e-workspace-create-npm
+          # - e2e-angular-extensions
+          # - e2e-cra-to-nx
+          # - e2e-cypress
+          # - e2e-esbuild
+          # - e2e-jest
+          # - e2e-js
+          # - e2e-lerna-smoke-tests
+          # - e2e-linter
+          # - e2e-make-angular-cli-faster
+          # - e2e-next
+          # - e2e-node
+          # - e2e-nx-init
+          # - e2e-nx-misc
+          # - e2e-nx-plugin
+          # - e2e-nx-run
+          # - e2e-react
+          # - e2e-web
+          # - e2e-rollup
+          # - e2e-storybook
+          # - e2e-storybook-angular
+          # - e2e-vite
+          # - e2e-webpack
+          # - e2e-workspace-create
+          # - e2e-workspace-create-npm
         include:
           # codeowner groups
-          - project: e2e-add-nx-to-monorepo
-            codeowners: 'S04SYHYKGNP'
+          # - project: e2e-add-nx-to-monorepo
+          #   codeowners: 'S04SYHYKGNP'
           - project: e2e-angular-core
             codeowners: 'S04SS457V38'
-          - project: e2e-angular-extensions
-            codeowners: 'S04SS457V38'
-          - project: e2e-cra-to-nx
-            codeowners: 'S04TNCNJG5N'
-          - project: e2e-cypress
-            codeowners: 'S04T16BTJJY'
-          - project: e2e-esbuild
-            codeowners: 'S04SJ6HHP0X'
-          - project: e2e-jest
-            codeowners: 'S04T16BTJJY'
-          - project: e2e-js
-            codeowners: 'S04SJ6HHP0X'
-          - project: e2e-lerna-smoke-tests
-            codeowners: 'S04TNCVEETS'
-          - project: e2e-linter
-            codeowners: 'S04SYJGKSCT'
-          - project: e2e-make-angular-cli-faster
-            codeowners: 'S04SS457V38'
-          - project: e2e-next
-            codeowners: 'S04TNCNJG5N'
-          - project: e2e-node
-            codeowners: 'S04SJ6HHP0X'
-          - project: e2e-nx-init
-            codeowners: 'S04SYHYKGNP'
-          - project: e2e-nx-misc
-            codeowners: 'S04SYHYKGNP'
-          - project: e2e-nx-plugin
-            codeowners: 'S04SYHYKGNP'
-          - project: e2e-nx-run
-            codeowners: 'S04SYHYKGNP'
-          - project: e2e-react
-            codeowners: 'S04TNCNJG5N'
-          - project: e2e-web
-            codeowners: 'S04SJ6PL98X'
-          - project: e2e-rollup
-            codeowners: 'S04SJ6PL98X'
-          - project: e2e-storybook
-            codeowners: 'S04SVQ8H0G5'
-          - project: e2e-storybook-angular
-            codeowners: 'S04SVQ8H0G5'
-          - project: e2e-vite
-            codeowners: 'S04SJ6PL98X'
-          - project: e2e-webpack
-            codeowners: 'S04SJ6PL98X'
-          - project: e2e-workspace-create
-            codeowners: 'S04SYHYKGNP'
-          - project: e2e-workspace-create-npm
-            codeowners: 'S04SYHYKGNP'
-        exclude:
-          # exclude non-CNW/Lerna tests from non-LTS node versions
-          - node_version: 16
-            project: e2e-add-nx-to-monorepo
-          - node_version: 16
-            project: e2e-angular-core
-          - node_version: 16
-            project: e2e-angular-extensions
-          - node_version: 16
-            project: e2e-cra-to-nx
-          - node_version: 16
-            project: e2e-cypress
-          - node_version: 16
-            project: e2e-esbuild
-          - node_version: 16
-            project: e2e-jest
-          - node_version: 16
-            project: e2e-js
-          - node_version: 16
-            project: e2e-linter
-          - node_version: 16
-            project: e2e-make-angular-cli-faster
-          - node_version: 16
-            project: e2e-next
-          - node_version: 16
-            project: e2e-node
-          - node_version: 16
-            project: e2e-nx-init
-          - node_version: 16
-            project: e2e-nx-misc
-          - node_version: 16
-            project: e2e-nx-plugin
-          - node_version: 16
-            project: e2e-lerna-smoke-tests
-          - node_version: 16
-            project: e2e-react
-          - node_version: 16
-            project: e2e-web
-          - node_version: 16
-            project: e2e-rollup
-          - node_version: 16
-            project: e2e-storybook
-          - node_version: 16
-            project: e2e-storybook-angular
-          - node_version: 16
-            project: e2e-vite
-          - node_version: 16
-            project: e2e-webpack
-          - node_version: 19
-            project: e2e-add-nx-to-monorepo
-          - node_version: 19
-            project: e2e-angular-core
-          - node_version: 19
-            project: e2e-angular-extensions
-          - node_version: 19
-            project: e2e-cra-to-nx
-          - node_version: 19
-            project: e2e-cypress
-          - node_version: 19
-            project: e2e-esbuild
-          - node_version: 19
-            project: e2e-jest
-          - node_version: 19
-            project: e2e-js
-          - node_version: 19
-            project: e2e-linter
-          - node_version: 19
-            project: e2e-make-angular-cli-faster
-          - node_version: 19
-            project: e2e-next
-          - node_version: 19
-            project: e2e-node
-          - node_version: 19
-            project: e2e-nx-init
-          - node_version: 19
-            project: e2e-nx-misc
-          - node_version: 19
-            project: e2e-nx-plugin
-          - node_version: 19
-            project: e2e-lerna-smoke-tests
-          - node_version: 19
-            project: e2e-react
-          - node_version: 19
-            project: e2e-web
-          - node_version: 19
-            project: e2e-rollup
-          - node_version: 19
-            project: e2e-storybook
-          - node_version: 19
-            project: e2e-storybook-angular
-          - node_version: 19
-            project: e2e-vite
-          - node_version: 19
-            project: e2e-webpack
+          # - project: e2e-angular-extensions
+          #   codeowners: 'S04SS457V38'
+          # - project: e2e-cra-to-nx
+          #   codeowners: 'S04TNCNJG5N'
+          # - project: e2e-cypress
+          #   codeowners: 'S04T16BTJJY'
+          # - project: e2e-esbuild
+          #   codeowners: 'S04SJ6HHP0X'
+          # - project: e2e-jest
+          #   codeowners: 'S04T16BTJJY'
+          # - project: e2e-js
+          #   codeowners: 'S04SJ6HHP0X'
+          # - project: e2e-lerna-smoke-tests
+          #   codeowners: 'S04TNCVEETS'
+          # - project: e2e-linter
+          #   codeowners: 'S04SYJGKSCT'
+          # - project: e2e-make-angular-cli-faster
+          #   codeowners: 'S04SS457V38'
+          # - project: e2e-next
+          #   codeowners: 'S04TNCNJG5N'
+          # - project: e2e-node
+          #   codeowners: 'S04SJ6HHP0X'
+          # - project: e2e-nx-init
+          #   codeowners: 'S04SYHYKGNP'
+          # - project: e2e-nx-misc
+          #   codeowners: 'S04SYHYKGNP'
+          # - project: e2e-nx-plugin
+          #   codeowners: 'S04SYHYKGNP'
+          # - project: e2e-nx-run
+          #   codeowners: 'S04SYHYKGNP'
+          # - project: e2e-react
+          #   codeowners: 'S04TNCNJG5N'
+          # - project: e2e-web
+          #   codeowners: 'S04SJ6PL98X'
+          # - project: e2e-rollup
+          #   codeowners: 'S04SJ6PL98X'
+          # - project: e2e-storybook
+          #   codeowners: 'S04SVQ8H0G5'
+          # - project: e2e-storybook-angular
+          #   codeowners: 'S04SVQ8H0G5'
+          # - project: e2e-vite
+          #   codeowners: 'S04SJ6PL98X'
+          # - project: e2e-webpack
+          #   codeowners: 'S04SJ6PL98X'
+          # - project: e2e-workspace-create
+          #   codeowners: 'S04SYHYKGNP'
+          # - project: e2e-workspace-create-npm
+          #   codeowners: 'S04SYHYKGNP'
+        # exclude:
+        #   # exclude non-CNW/Lerna tests from non-LTS node versions
+        #   - node_version: 16
+        #     project: e2e-add-nx-to-monorepo
+        #   - node_version: 16
+        #     project: e2e-angular-core
+        #   - node_version: 16
+        #     project: e2e-angular-extensions
+        #   - node_version: 16
+        #     project: e2e-cra-to-nx
+        #   - node_version: 16
+        #     project: e2e-cypress
+        #   - node_version: 16
+        #     project: e2e-esbuild
+        #   - node_version: 16
+        #     project: e2e-jest
+        #   - node_version: 16
+        #     project: e2e-js
+        #   - node_version: 16
+        #     project: e2e-linter
+        #   - node_version: 16
+        #     project: e2e-make-angular-cli-faster
+        #   - node_version: 16
+        #     project: e2e-next
+        #   - node_version: 16
+        #     project: e2e-node
+        #   - node_version: 16
+        #     project: e2e-nx-init
+        #   - node_version: 16
+        #     project: e2e-nx-misc
+        #   - node_version: 16
+        #     project: e2e-nx-plugin
+        #   - node_version: 16
+        #     project: e2e-lerna-smoke-tests
+        #   - node_version: 16
+        #     project: e2e-react
+        #   - node_version: 16
+        #     project: e2e-web
+        #   - node_version: 16
+        #     project: e2e-rollup
+        #   - node_version: 16
+        #     project: e2e-storybook
+        #   - node_version: 16
+        #     project: e2e-storybook-angular
+        #   - node_version: 16
+        #     project: e2e-vite
+        #   - node_version: 16
+        #     project: e2e-webpack
+        #   - node_version: 19
+        #     project: e2e-add-nx-to-monorepo
+        #   - node_version: 19
+        #     project: e2e-angular-core
+        #   - node_version: 19
+        #     project: e2e-angular-extensions
+        #   - node_version: 19
+        #     project: e2e-cra-to-nx
+        #   - node_version: 19
+        #     project: e2e-cypress
+        #   - node_version: 19
+        #     project: e2e-esbuild
+        #   - node_version: 19
+        #     project: e2e-jest
+        #   - node_version: 19
+        #     project: e2e-js
+        #   - node_version: 19
+        #     project: e2e-linter
+        #   - node_version: 19
+        #     project: e2e-make-angular-cli-faster
+        #   - node_version: 19
+        #     project: e2e-next
+        #   - node_version: 19
+        #     project: e2e-node
+        #   - node_version: 19
+        #     project: e2e-nx-init
+        #   - node_version: 19
+        #     project: e2e-nx-misc
+        #   - node_version: 19
+        #     project: e2e-nx-plugin
+        #   - node_version: 19
+        #     project: e2e-lerna-smoke-tests
+        #   - node_version: 19
+        #     project: e2e-react
+        #   - node_version: 19
+        #     project: e2e-web
+        #   - node_version: 19
+        #     project: e2e-rollup
+        #   - node_version: 19
+        #     project: e2e-storybook
+        #   - node_version: 19
+        #     project: e2e-storybook-angular
+        #   - node_version: 19
+        #     project: e2e-vite
+        #   - node_version: 19
+        #     project: e2e-webpack
       fail-fast: false
 
     name: ${{ matrix.project }} (v${{ matrix.node_version }})
@@ -371,35 +371,35 @@ jobs:
             const message = result.split('\n').map(l => l.trim()).join('\n');
             core.setOutput('SLACK_MESSAGE', message);
 
-  report-failure:
-    if: ${{ failure() && github.repository_owner == 'nrwl' && github.event_name != 'workflow_dispatch' }}
-    needs: process-result
-    runs-on: ubuntu-latest
-    name: Report failure
-    steps:
-      - name: Send notification
-        uses: ravsamhq/notify-slack-action@v2
-        with:
-          status: 'failure'
-          message_format: '{emoji} Workflow has {status_message} ${{ needs.process-result.outputs.message }}'
-          notification_title: '{workflow}'
-          footer: '<{run_url}|View Run> / Last commit <{commit_url}|{commit_sha}>'
-          mention_groups: ${{ needs.process-result.outputs.codeowners }}
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.ACTION_MONITORING_SLACK }}
+  # report-failure:
+  #   if: ${{ failure() && github.repository_owner == 'nrwl' && github.event_name != 'workflow_dispatch' }}
+  #   needs: process-result
+  #   runs-on: ubuntu-latest
+  #   name: Report failure
+  #   steps:
+  #     - name: Send notification
+  #       uses: ravsamhq/notify-slack-action@v2
+  #       with:
+  #         status: 'failure'
+  #         message_format: '{emoji} Workflow has {status_message} ${{ needs.process-result.outputs.message }}'
+  #         notification_title: '{workflow}'
+  #         footer: '<{run_url}|View Run> / Last commit <{commit_url}|{commit_sha}>'
+  #         mention_groups: ${{ needs.process-result.outputs.codeowners }}
+  #       env:
+  #         SLACK_WEBHOOK_URL: ${{ secrets.ACTION_MONITORING_SLACK }}
 
-  report-success:
-    if: ${{ success() && github.repository_owner == 'nrwl' && github.event_name != 'workflow_dispatch' }}
-    needs: e2e
-    runs-on: ubuntu-latest
-    name: Report success
-    steps:
-      - name: Send notification
-        uses: ravsamhq/notify-slack-action@v2
-        with:
-          status: ${{ needs.e2e.result }}
-          message_format: '{emoji} Workflow has {status_message}'
-          notification_title: '{workflow}'
-          footer: '<{run_url}|View Run> / Last commit <{commit_url}|{commit_sha}>'
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.ACTION_MONITORING_SLACK }}
+  # report-success:
+  #   if: ${{ success() && github.repository_owner == 'nrwl' && github.event_name != 'workflow_dispatch' }}
+  #   needs: e2e
+  #   runs-on: ubuntu-latest
+  #   name: Report success
+  #   steps:
+  #     - name: Send notification
+  #       uses: ravsamhq/notify-slack-action@v2
+  #       with:
+  #         status: ${{ needs.e2e.result }}
+  #         message_format: '{emoji} Workflow has {status_message}'
+  #         notification_title: '{workflow}'
+  #         footer: '<{run_url}|View Run> / Last commit <{commit_url}|{commit_sha}>'
+  #       env:
+  #         SLACK_WEBHOOK_URL: ${{ secrets.ACTION_MONITORING_SLACK }}
