@@ -188,6 +188,15 @@
       },
       "description": "Update the @angular/cli package version to ~16.0.0-rc.1.",
       "factory": "./src/migrations/update-16-1-0/update-angular-cli"
+    },
+    "extract-app-config-for-standalone": {
+      "cli": "nx",
+      "version": "16.1.0-beta.0",
+      "requires": {
+        "@angular/core": ">=16.0.0-rc.1"
+      },
+      "description": "Extract the app config for standalone apps",
+      "factory": "./src/migrations/update-16-1-0/extract-standalone-config-from-bootstrap"
     }
   },
   "packageJsonUpdates": {
