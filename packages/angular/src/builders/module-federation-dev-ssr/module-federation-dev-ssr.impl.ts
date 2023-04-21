@@ -150,8 +150,10 @@ export function executeModuleFederationDevSSRBuilder(
 
   return from(Promise.all(remoteProcessPromises)).pipe(
     switchMap(() => from(import('@nguniversal/builders'))),
-    switchMap(({ executeSSRDevServerBuilder }) =>
-      executeSSRDevServerBuilder(options, context)
+    switchMap(
+      ({ executeSSRDevServerBuilder }) =>
+        // TODO(leo): @nguniversal/builders rxjs version is still incompatible, follow up later
+        executeSSRDevServerBuilder(options, context as any) as any
     )
   );
 }

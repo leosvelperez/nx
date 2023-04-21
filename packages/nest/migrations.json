@@ -42,6 +42,15 @@
           "alwaysAddToPackageJson": false
         }
       }
+    },
+    "16.1.0": {
+      "version": "16.1.0-beta.0",
+      "packages": {
+        "@nestjs/swagger": {
+          "version": "^6.3.0",
+          "alwaysAddToPackageJson": false
+        }
+      }
     }
   }
 }

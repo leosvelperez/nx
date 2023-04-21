@@ -6,7 +6,7 @@
   "targets": {
     "build-ng": {
       "dependsOn": ["^build", "build-base"],
-      "executor": "@nrwl/angular:package",
+      "executor": "@nx/angular:package",
       "options": {
         "project": "packages-legacy/angular/ng-package.json",
         "tsConfig": "packages-legacy/angular/tsconfig.json"
