@@ -184,7 +184,7 @@
       "cli": "nx",
       "version": "16.1.0-beta.0",
       "requires": {
-        "@angular/core": ">=16.1.0-rc.1"
+        "@angular/core": ">=16.0.0-rc.1"
       },
       "description": "Update the @angular/cli package version to ~16.0.0-rc.1.",
       "factory": "./src/migrations/update-16-1-0/update-angular-cli"

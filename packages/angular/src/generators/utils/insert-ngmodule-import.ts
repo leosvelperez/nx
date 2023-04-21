@@ -10,8 +10,6 @@ import type {
 } from 'typescript';
 import { ensureTypescript } from '@nx/js/src/utils/typescript/ensure-typescript';
 
-import { getDecorators } from '@typescript-eslint/type-utils';
-
 let tsModule: typeof import('typescript');
 
 export type ngModuleDecoratorProperty =
@@ -51,6 +49,7 @@ export function insertNgModuleProperty(
 
   const ngModuleClassDeclaration = findDecoratedClass(sourceFile, ngModuleName);
 
+  const { getDecorators } = getTsEsLintTypeUtils();
   const ngModuleDecorator = getDecorators(ngModuleClassDeclaration).find(
     (decorator) =>
       tsModule.isCallExpression(decorator.expression) &&
@@ -180,6 +179,8 @@ function findDecoratedClass(
   const classDeclarations = sourceFile.statements.filter(
     tsModule.isClassDeclaration
   );
+  const { getDecorators } = getTsEsLintTypeUtils();
+
   return classDeclarations.find((declaration) => {
     const decorators = getDecorators(declaration);
     if (decorators) {
@@ -208,4 +209,9 @@ function findPropertyAssignment(
       tsModule.isIdentifier(property.name) &&
       property.name.escapedText === propertyName
   ) as PropertyAssignment;
+}
+
+let tsUtils: typeof import('@typescript-eslint/type-utils');
+function getTsEsLintTypeUtils(): typeof import('@typescript-eslint/type-utils') {
+  return tsUtils ?? require('@typescript-eslint/type-utils');
 }
