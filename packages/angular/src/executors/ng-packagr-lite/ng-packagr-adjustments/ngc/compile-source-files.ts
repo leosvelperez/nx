@@ -2,7 +2,7 @@
  * Adapted from the original ng-packagr source.
  *
  * Changes made:
- * - Made sure ngccProcessor is optional.
+ * - Remove ngccProcessor (angular < v16)
  * - Use custom cacheCompilerHost instead of the one provided by ng-packagr.
  */
 
@@ -17,12 +17,11 @@ import {
   isPackage,
   PackageNode,
 } from 'ng-packagr/lib/ng-package/nodes';
-import { NgccProcessor } from 'ng-packagr/lib/ngc/ngcc-processor';
 import { augmentProgramWithVersioning } from 'ng-packagr/lib/ts/cache-compiler-host';
-import { ngccTransformCompilerHost } from 'ng-packagr/lib/ts/ngcc-transform-compiler-host';
 import * as log from 'ng-packagr/lib/utils/log';
 import { ngCompilerCli } from 'ng-packagr/lib/utils/ng-compiler-cli';
 import * as ts from 'typescript';
+import { getInstalledAngularVersionInfo } from '../../../utilities/angular-version-utils';
 import { StylesheetProcessor } from '../styles/stylesheet-processor';
 import { cacheCompilerHost } from '../ts/cache-compiler-host';
 
@@ -32,7 +31,6 @@ export async function compileSourceFiles(
   moduleResolutionCache: ts.ModuleResolutionCache,
   extraOptions?: Partial<CompilerOptions>,
   stylesheetProcessor?: StylesheetProcessor,
-  ngccProcessor?: NgccProcessor,
   watch?: boolean
 ) {
   const { NgtscProgram, formatDiagnostics } = await ngCompilerCli();
@@ -45,7 +43,7 @@ export async function compileSourceFiles(
   const ngPackageNode: PackageNode = graph.find(isPackage);
   const inlineStyleLanguage = ngPackageNode.data.inlineStyleLanguage;
 
-  let tsCompilerHost = cacheCompilerHost(
+  const tsCompilerHost = cacheCompilerHost(
     graph,
     entryPoint,
     tsConfigOptions,
@@ -53,15 +51,6 @@ export async function compileSourceFiles(
     stylesheetProcessor,
     inlineStyleLanguage
   );
-
-  if (ngccProcessor) {
-    tsCompilerHost = ngccTransformCompilerHost(
-      tsCompilerHost,
-      tsConfigOptions,
-      ngccProcessor,
-      moduleResolutionCache
-    );
-  }
 
   const cache = entryPoint.cache;
   const sourceFileCache = cache.sourcesFileCache;
@@ -165,9 +154,15 @@ export async function compileSourceFiles(
     }
 
     // Collect sources that are required to be emitted
+    const angularVersion = getInstalledAngularVersionInfo();
+    const incrementalCompilation: typeof angularCompiler.incrementalCompilation =
+      angularVersion.major < 16
+        ? (angularCompiler as any).incrementalDriver
+        : angularCompiler.incrementalCompilation;
+
     if (
       !ignoreForEmit.has(sourceFile) &&
-      !angularCompiler.incrementalDriver.safeToSkipEmit(sourceFile)
+      !incrementalCompilation.safeToSkipEmit(sourceFile)
     ) {
       // If required to emit, diagnostics may have also changed
       if (!ignoreForDiagnostics.has(sourceFile)) {

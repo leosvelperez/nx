@@ -150,6 +150,9 @@
     "update-angular-cli-version-15-2-0": {
       "cli": "nx",
       "version": "15.8.0-beta.4",
+      "requires": {
+        "@angular/core": ">=15.2.0"
+      },
       "description": "Update the @angular/cli package version to ~15.2.0.",
       "factory": "./src/migrations/update-15-8-0/update-angular-cli"
     },
@@ -188,6 +191,24 @@
       "version": "16.0.0-beta.6",
       "description": "Remove karma as default unitTestRunner from nxJson and project configurations",
       "implementation": "./src/migrations/update-16-0-0/remove-karma-defaults"
+    },
+    "update-angular-cli-version-16-0-0-rc-1": {
+      "cli": "nx",
+      "version": "16.1.0-beta.0",
+      "requires": {
+        "@angular/core": ">=16.0.0-rc.1"
+      },
+      "description": "Update the @angular/cli package version to ~16.0.0-rc.1.",
+      "factory": "./src/migrations/update-16-1-0/update-angular-cli"
+    },
+    "extract-app-config-for-standalone": {
+      "cli": "nx",
+      "version": "16.1.0-beta.0",
+      "requires": {
+        "@angular/core": ">=16.0.0-rc.1"
+      },
+      "description": "Extract the app config for standalone apps",
+      "factory": "./src/migrations/update-16-1-0/extract-standalone-config-from-bootstrap"
     }
   },
   "packageJsonUpdates": {
@@ -965,6 +986,89 @@
       "version": "15.8.6-beta.0",
       "requires": {
         "rxjs": ">=7.5.0 <7.6.0"
+      },
+      "packages": {
+        "rxjs": {
+          "version": "~7.8.0",
+          "alwaysAddToPackageJson": false
+        }
+      }
+    },
+    "16.1.0": {
+      "version": "16.1.0-beta.0",
+      "x-prompt": "Do you want to update the Angular version to v16?",
+      "requires": {
+        "@angular/core": "^15.2.0",
+        "typescript": ">=4.9.3 <5.1"
+      },
+      "packages": {
+        "@angular/core": {
+          "version": "~16.0.0-rc.2",
+          "alwaysAddToPackageJson": true
+        },
+        "zone.js": {
+          "version": "~0.13.0",
+          "alwaysAddToPackageJson": false
+        },
+        "@angular-devkit/architect": {
+          "version": "~0.1600.0-rc.1",
+          "alwaysAddToPackageJson": false
+        },
+        "@angular-devkit/build-angular": {
+          "version": "~16.0.0-rc.1",
+          "alwaysAddToPackageJson": false
+        },
+        "@angular-devkit/build-webpack": {
+          "version": "~0.1600.0-rc.1",
+          "alwaysAddToPackageJson": false
+        },
+        "@angular-devkit/core": {
+          "version": "~16.0.0-rc.1",
+          "alwaysAddToPackageJson": false
+        },
+        "@angular-devkit/schematics": {
+          "version": "~16.0.0-rc.1",
+          "alwaysAddToPackageJson": false
+        },
+        "@schematics/angular": {
+          "version": "~16.0.0-rc.1",
+          "alwaysAddToPackageJson": false
+        },
+        "ng-packagr": {
+          "version": "~16.0.0-rc.1",
+          "alwaysAddToPackageJson": false
+        },
+        "@nguniversal/build-angular": {
+          "version": "~16.0.0-rc.1",
+          "alwaysAddToPackageJson": false
+        },
+        "@nguniversal/builders": {
+          "version": "~16.0.0-rc.1",
+          "alwaysAddToPackageJson": false
+        },
+        "@nguniversal/common": {
+          "version": "~16.0.0-rc.1",
+          "alwaysAddToPackageJson": false
+        },
+        "@nguniversal/express-engine": {
+          "version": "~16.0.0-rc.1",
+          "alwaysAddToPackageJson": false
+        },
+        "@angular/material": {
+          "version": "~16.0.0-rc.1",
+          "alwaysAddToPackageJson": false
+        },
+        "@angular/cdk": {
+          "version": "~16.0.0-rc.1",
+          "alwaysAddToPackageJson": false
+        }
+      }
+    },
+    "16.1.0-rxjs": {
+      "version": "16.1.0-beta.0",
+      "requires": {
+        "@angular/core": ">=16.0.0-rc.1",
+        "rxjs": "<7.8.0"
       },
       "packages": {
         "rxjs": {

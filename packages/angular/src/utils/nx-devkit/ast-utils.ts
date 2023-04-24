@@ -1,6 +1,6 @@
 import type * as ts from 'typescript';
-import { findNodes } from '@nx/js';
 import {
+  findNodes,
   getImport,
   getSourceNodes,
   insertChange,
@@ -700,6 +700,47 @@ export function addProviderToBootstrapApplication(
   if (providersArrayNodes.length === 0) {
     throw new Error(
       `Providers does not exist in the bootstrapApplication call within ${filePath}.`
+    );
+  }
+
+  const arrayNode = providersArrayNodes[0];
+
+  const newFileContents = `${fileContents.slice(
+    0,
+    arrayNode.getStart() + 1
+  )}${providerToAdd},${fileContents.slice(
+    arrayNode.getStart() + 1,
+    fileContents.length
+  )}`;
+
+  tree.write(filePath, newFileContents);
+}
+
+/**
+ * Add a provider to appConfig for Standalone Applications
+ * NOTE: The appConfig must be marked with type ApplicationConfig and the providers must be declared as an array in the config
+ * @param tree Virtual Tree
+ * @param filePath Path to the file containing the bootstrapApplication call
+ * @param providerToAdd Provider to add
+ */
+export function addProviderToAppConfig(
+  tree: Tree,
+  filePath: string,
+  providerToAdd: string
+) {
+  ensureTypescript();
+  const { tsquery } = require('@phenomnomnominal/tsquery');
+  const PROVIDERS_ARRAY_SELECTOR =
+    'VariableDeclaration:has(TypeReference > Identifier[name=ApplicationConfig]) > ObjectLiteralExpression  PropertyAssignment:has(Identifier[name=providers]) > ArrayLiteralExpression';
+
+  const fileContents = tree.read(filePath, 'utf-8');
+  const ast = tsquery.ast(fileContents);
+  const providersArrayNodes = tsquery(ast, PROVIDERS_ARRAY_SELECTOR, {
+    visitAllChildren: true,
+  });
+  if (providersArrayNodes.length === 0) {
+    throw new Error(
+      `'providers' does not exist in the application configuration at '${filePath}'.`
     );
   }
 
