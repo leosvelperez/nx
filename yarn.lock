@@ -5268,14 +5268,6 @@
     read-package-json-fast "^3.0.0"
     which "^3.0.0"
 
-"@nrwl/angular@16.0.0-beta.5":
-  version "16.0.0-beta.5"
-  resolved "https://registry.yarnpkg.com/@nrwl/angular/-/angular-16.0.0-beta.5.tgz#d3048a1e283a7593c3156be9d66102d99413c531"
-  integrity sha512-1bca8E691pk5PpfSNh68PB0lgLW499scoeBceyuOIWkjY+pV19S/cUJr9dJv3yPxPD3YM8BLZe4BwMxnRkIIlQ==
-  dependencies:
-    "@nx/angular" "16.0.0-beta.5"
-    tslib "^2.3.0"
-
 "@nrwl/cli@15.0.3":
   version "15.0.3"
   resolved "https://registry.yarnpkg.com/@nrwl/cli/-/cli-15.0.3.tgz#31cd05f775930f23623c64bebcf45889865fc83b"
@@ -5545,34 +5537,6 @@
     chalk "^4.1.0"
     consola "^2.15.0"
     node-fetch "^2.6.1"
-
-"@nx/angular@16.0.0-beta.5":
-  version "16.0.0-beta.5"
-  resolved "https://registry.yarnpkg.com/@nx/angular/-/angular-16.0.0-beta.5.tgz#eb30a839e7aa11e411b009e5ff582be368086119"
-  integrity sha512-NrZCMz4mIQ2KHQpu8Ku9JoYd1K8GAzKJIZjobiP564NcoF0jaqypdYG92tVvBDJhxyrhldu3nleTkulUturMag==
-  dependencies:
-    "@nrwl/angular" "16.0.0-beta.5"
-    "@nx/cypress" "16.0.0-beta.5"
-    "@nx/devkit" "16.0.0-beta.5"
-    "@nx/jest" "16.0.0-beta.5"
-    "@nx/js" "16.0.0-beta.5"
-    "@nx/linter" "16.0.0-beta.5"
-    "@nx/webpack" "16.0.0-beta.5"
-    "@nx/workspace" "16.0.0-beta.5"
-    "@phenomnomnominal/tsquery" "~5.0.1"
-    chalk "^4.1.0"
-    chokidar "^3.5.1"
-    enquirer "^2.3.6"
-    http-server "^14.1.0"
-    ignore "^5.0.4"
-    magic-string "~0.26.2"
-    minimatch "3.0.5"
-    semver "7.3.4"
-    ts-node "10.9.1"
-    tsconfig-paths "^4.1.2"
-    tslib "^2.3.0"
-    webpack "^5.75.0"
-    webpack-merge "5.7.3"
 
 "@nx/cypress@16.0.0-beta.5":
   version "16.0.0-beta.5"
@@ -26645,14 +26609,6 @@ webpack-log@^2.0.0:
   dependencies:
     ansi-colors "^3.0.0"
     uuid "^3.3.2"
-
-webpack-merge@5.7.3:
-  version "5.7.3"
-  resolved "https://registry.yarnpkg.com/webpack-merge/-/webpack-merge-5.7.3.tgz#2a0754e1877a25a8bbab3d2475ca70a052708213"
-  integrity sha512-6/JUQv0ELQ1igjGDzHkXbVDRxkfA57Zw7PfiupdLFJYrgFqY5ZP8xxbpp2lU3EPwYx89ht5Z/aDkD40hFCm5AA==
-  dependencies:
-    clone-deep "^4.0.1"
-    wildcard "^2.0.0"
 
 webpack-merge@5.8.0, webpack-merge@^5.8.0:
   version "5.8.0"

@@ -264,7 +264,6 @@
     "@nx/react": "16.0.0-beta.5",
     "@nx/jest": "16.0.0-beta.5",
     "@nx/next": "16.0.0-beta.5",
-    "@nx/angular": "16.0.0-beta.5",
     "@nx/eslint-plugin": "16.0.0-beta.5"
   },
   "author": "Victor Savkin",
