@@ -49,6 +49,10 @@
         "description": "The name of the root module class.",
         "default": "AppServerModule"
       },
+      "standalone": {
+        "type": "boolean",
+        "description": "Use Standalone Components to bootstrap SSR."
+      },
       "skipFormat": {
         "type": "boolean",
         "description": "Skip formatting the workspace after the generator completes.",

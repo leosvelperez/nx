@@ -1,10 +1,14 @@
 import type { Tree } from '@nx/devkit';
 import { readNxJson } from '@nx/devkit';
 import type { Schema } from '../schema';
+import { isNgStandaloneApp } from '../../../utils/nx-devkit/ast-utils';
 
 export function normalizeOptions(tree: Tree, options: Schema) {
+  const project = options.project ?? readNxJson(tree).defaultProject;
+  const isStandaloneApp = isNgStandaloneApp(tree, project);
+
   return {
-    project: options.project ?? readNxJson(tree).defaultProject,
+    project,
     appId: options.appId ?? 'serverApp',
     main: options.main ?? 'main.server.ts',
     serverFileName: options.serverFileName ?? 'server.ts',
@@ -12,5 +16,6 @@ export function normalizeOptions(tree: Tree, options: Schema) {
     rootModuleFileName: options.rootModuleFileName ?? 'app.server.module.ts',
     rootModuleClassName: options.rootModuleClassName ?? 'AppServerModule',
     skipFormat: options.skipFormat ?? false,
+    standalone: options.standalone ?? isStandaloneApp,
   };
 }

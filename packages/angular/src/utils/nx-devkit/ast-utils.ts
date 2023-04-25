@@ -676,6 +676,28 @@ function getListOfRoutes(
   return null;
 }
 
+export function isNgStandaloneApp(tree: Tree, projectName: string) {
+  const project = readProjectConfiguration(tree, projectName);
+  const mainFile = project.targets?.build?.options?.main;
+
+  if (project.projectType !== 'application' || !mainFile) {
+    return false;
+  }
+
+  ensureTypescript();
+  const { tsquery } = require('@phenomnomnominal/tsquery');
+
+  const mainFileContents = tree.read(mainFile, 'utf-8');
+
+  const BOOTSTRAP_APPLICATION_SELECTOR =
+    'CallExpression:has(Identifier[name=bootstrapApplication])';
+  const ast = tsquery.ast(mainFileContents);
+  const nodes = tsquery(ast, BOOTSTRAP_APPLICATION_SELECTOR, {
+    visitAllChildren: true,
+  });
+  return nodes.length > 0;
+}
+
 /**
  * Add a provider to bootstrapApplication call for Standalone Applications
  * @param tree Virtual Tree

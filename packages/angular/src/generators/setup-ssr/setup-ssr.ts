@@ -17,7 +17,11 @@ export async function setupSsr(tree: Tree, schema: Schema) {
   const options = normalizeOptions(tree, schema);
 
   generateSSRFiles(tree, options);
-  updateAppModule(tree, options);
+
+  if (!options.standalone) {
+    updateAppModule(tree, options);
+  }
+
   updateProjectConfig(tree, options);
 
   const pkgVersions = versions(tree);

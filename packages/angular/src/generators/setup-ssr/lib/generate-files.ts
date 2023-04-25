@@ -11,5 +11,24 @@ export function generateSSRFiles(tree: Tree, schema: Schema) {
 
   const pathToFiles = joinPathFragments(__dirname, '../', 'files');
 
-  generateFiles(tree, pathToFiles, projectRoot, { ...schema, tpl: '' });
+  generateFiles(tree, joinPathFragments(pathToFiles, 'base'), projectRoot, {
+    ...schema,
+    tpl: '',
+  });
+
+  if (schema.standalone) {
+    generateFiles(
+      tree,
+      joinPathFragments(pathToFiles, 'standalone'),
+      projectRoot,
+      { ...schema, tpl: '' }
+    );
+  } else {
+    generateFiles(
+      tree,
+      joinPathFragments(pathToFiles, 'ngmodule'),
+      projectRoot,
+      { ...schema, tpl: '' }
+    );
+  }
 }

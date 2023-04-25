@@ -193,4 +193,93 @@ describe('setupSSR', () => {
     );
     expect(pkgJson.devDependencies['@nguniversal/builders']).toEqual('~14.2.0');
   });
+
+  it('should create the files correctly for ssr when app is standalone', async () => {
+    // ARRANGE
+    const tree = createTreeWithEmptyWorkspace({ layout: 'apps-libs' });
+
+    await generateTestApplication(tree, {
+      name: 'app1',
+      standalone: true,
+    });
+
+    // ACT
+    await setupSsr(tree, { project: 'app1' });
+
+    // ASSERT
+    expect(
+      readProjectConfiguration(tree, 'app1').targets.server
+    ).toMatchSnapshot();
+    expect(tree.read('apps/app1/server.ts', 'utf-8')).toMatchSnapshot();
+    expect(tree.read('apps/app1/src/main.server.ts', 'utf-8'))
+      .toMatchInlineSnapshot(`
+      "import { bootstrapApplication } from '@angular/platform-browser';
+      import { AppComponent } from './app/app.component';
+      import { config } from './app/app.config.server';
+
+      const bootstrap = () => bootstrapApplication(AppComponent, config);
+
+      export default bootstrap;
+      "
+    `);
+    expect(tree.read('apps/app1/tsconfig.server.json', 'utf-8'))
+      .toMatchInlineSnapshot(`
+      "/* To learn more about this file see: https://angular.io/config/tsconfig. */
+      {
+        "extends": "./tsconfig.app.json",
+        "compilerOptions": {
+          "outDir": "../../out-tsc/server",
+          "target": "es2019",
+          "types": ["node"]
+        },
+        "files": ["src/main.server.ts", "server.ts"]
+      }
+      "
+    `);
+    expect(tree.read('apps/app1/src/app/app.config.server.ts', 'utf-8'))
+      .toMatchInlineSnapshot(`
+      "import { mergeApplicationConfig, ApplicationConfig } from '@angular/core';
+      import { provideServerRendering } from '@angular/platform-server';
+      import { appConfig } from './app.config';
+
+      const serverConfig: ApplicationConfig = {
+        providers: [provideServerRendering()],
+      };
+
+      export const config = mergeApplicationConfig(appConfig, serverConfig);
+      "
+    `);
+
+    const packageJson = readJson<PackageJson>(tree, 'package.json');
+    const dependencies = {
+      '@nguniversal/express-engine': ngUniversalVersion,
+      '@angular/platform-server': angularVersion,
+    };
+    for (const [dep, version] of Object.entries(dependencies)) {
+      expect(packageJson.dependencies[dep]).toEqual(version);
+    }
+    const devDeps = {
+      '@nguniversal/builders': ngUniversalVersion,
+    };
+    for (const [dep, version] of Object.entries(devDeps)) {
+      expect(packageJson.devDependencies[dep]).toEqual(version);
+    }
+    const nxJson = readJson<NxJsonConfiguration>(tree, 'nx.json');
+    expect(nxJson.tasksRunnerOptions).toMatchInlineSnapshot(`
+      {
+        "default": {
+          "options": {
+            "cacheableOperations": [
+              "build",
+              "lint",
+              "test",
+              "e2e",
+              "server",
+            ],
+          },
+          "runner": "nx/tasks-runners/default",
+        },
+      }
+    `);
+  });
 });
