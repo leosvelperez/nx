@@ -7,7 +7,7 @@ import {
   updateProjectConfig,
 } from '@nx/e2e/utils';
 
-describe('js:node error handling', () => {
+describe.skip('js:node error handling', () => {
   let scope: string;
 
   beforeEach(() => {

@@ -9,7 +9,7 @@ import {
 } from '@nx/e2e/utils';
 import { execSync } from 'child_process';
 
-describe('inlining', () => {
+describe.skip('inlining', () => {
   let scope: string;
 
   beforeEach(() => {

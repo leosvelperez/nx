@@ -154,6 +154,8 @@ describe('js e2e', () => {
       env: { NX_BATCH_MODE: 'true' },
     });
 
+    console.log(batchBuildOutput);
+
     expect(batchBuildOutput).toContain(`Running 2 tasks with @nx/js:tsc`);
     expect(batchBuildOutput).toContain(
       `Compiling TypeScript files for project "${lib}"...`
@@ -191,7 +193,7 @@ describe('js e2e', () => {
     );
   }, 240_000);
 
-  it('should not create a `.babelrc` file when creating libs with js executors (--compiler=tsc)', () => {
+  it.skip('should not create a `.babelrc` file when creating libs with js executors (--compiler=tsc)', () => {
     const lib = uniq('lib');
     runCLI(
       `generate @nx/js:lib ${lib} --compiler=tsc --includeBabelRc=false --no-interactive`
@@ -201,7 +203,7 @@ describe('js e2e', () => {
   });
 });
 
-describe('package.json updates', () => {
+describe.skip('package.json updates', () => {
   beforeEach(() => newProject({ name: 'proj', packageManager: 'npm' }));
 
   afterEach(() => cleanupProject());

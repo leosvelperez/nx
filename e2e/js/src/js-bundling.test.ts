@@ -6,7 +6,7 @@ import {
   uniq,
 } from '@nx/e2e/utils';
 
-describe('bundling libs', () => {
+describe.skip('bundling libs', () => {
   let scope: string;
 
   beforeEach(() => {

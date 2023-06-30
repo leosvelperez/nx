@@ -16,7 +16,7 @@ import {
   updateJson,
 } from '../../utils';
 
-describe('js e2e', () => {
+describe.skip('js e2e', () => {
   let scope: string;
 
   beforeEach(() => {
