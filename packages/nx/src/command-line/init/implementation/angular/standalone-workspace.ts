@@ -125,7 +125,7 @@ function createNxJson(
   if (workspaceTargets.includes('e2e')) {
     nxJson.targetDefaults.e2e = { inputs: ['default', '^production'] };
   }
-  // Angular 14 workspaces support defaultProject, keep it until we drop support
+  // Angular 15 workspaces still support defaultProject. Support was removed in Angular 16.
   nxJson.defaultProject = angularJson.defaultProject;
   writeJsonFile(join(repoRoot, 'nx.json'), nxJson);
 }
