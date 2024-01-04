@@ -33,19 +33,15 @@
         "file": false
       }
     },
-    "groups": {
-      "npm": {
-        "projects": [
-          "packages/*",
-          "packages/nx/native-packages/*",
-          "packages-legacy/*"
-        ],
-        "version": {
-          "generatorOptions": {
-            "packageRoot": "build/packages/{projectName}",
-            "currentVersionResolver": "registry"
-          }
-        }
+    "projects": [
+      "packages/*",
+      "packages/nx/native-packages/*",
+      "packages-legacy/*"
+    ],
+    "version": {
+      "generatorOptions": {
+        "packageRoot": "build/packages/{projectName}",
+        "currentVersionResolver": "registry"
       }
     }
   },
