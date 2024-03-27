@@ -8333,6 +8333,14 @@
                 "children": [],
                 "isExternal": false,
                 "disableCollapsible": false
+              },
+              {
+                "id": "sync",
+                "path": "/nx-api/js/generators/sync",
+                "name": "sync",
+                "children": [],
+                "isExternal": false,
+                "disableCollapsible": false
               }
             ],
             "isExternal": false,
