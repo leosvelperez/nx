@@ -81,11 +81,16 @@ export async function syncGenerator(tree: Tree, options: SyncSchema) {
     const sourceTsconfig = readJson<Tsconfig>(tree, sourceProjectTsconfigPath);
 
     for (const dep of data) {
-      // Set defaults only in the case where we have at least one dependency so that we don't patch files when not necessary
-      sourceTsconfig.references = sourceTsconfig.references || [];
-
       // Get the target project node
       const targetProjectNode = projectGraph.nodes[dep.target];
+
+      if (!targetProjectNode) {
+        // It's an external dependency
+        continue;
+      }
+
+      // Set defaults only in the case where we have at least one dependency so that we don't patch files when not necessary
+      sourceTsconfig.references = sourceTsconfig.references || [];
 
       // Ensure the project reference for the target is set
       const relativePathToTargetRoot = relative(
